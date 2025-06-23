@@ -98,4 +98,100 @@ class TaskManager:
     # -------------------------
     # BST for Hierarchy
     # -------------------------
-    
+    class BSTNode:
+        def __init__(self, task):
+            self.task = task
+            self.left = None
+            self.right = None
+
+    def insert_bst(self, root, task):
+        if root is None:
+            return self.BSTNode(task)
+        if task.deadline < root.task.deadline:
+            root.left = self.insert_bst(root.left, task)
+        else:
+            root.right = self.insert_bst(root.right, task)
+        return root
+
+    def delete_bst(self, root, deadline):
+        if root is None:
+            return None
+        if deadline < root.task.deadline:
+            root.left = self.delete_bst(root.left, deadline)
+        elif deadline > root.task.deadline:
+            root.right = self.delete_bst(root.right, deadline)
+        else:
+            if not root.left:
+                return root.right
+            if not root.right:
+                return root.left
+            min_larger_node = self.get_min(root.right)
+            root.task = min_larger_node.task
+            root.right = self.delete_bst(root.right, min_larger_node.task.deadline)
+        return root
+
+    def get_min(self, root):
+        while root.left is not None:
+            root = root.left
+        return root
+
+    def print_bst(self, root):
+        if root:
+            self.print_bst(root.left)
+            print(root.task)
+            self.print_bst(root.right)
+
+    # -------------------------
+    # Recursive Subtasks
+    # -------------------------
+    def add_subtask(self, parent_task, subtask):
+        parent_task.subtasks.append(subtask)
+
+    def print_subtasks(self, task):
+        print(f"Subtasks of {task.name}:")
+        self._print_subtasks_recursive(task.subtasks)
+
+    def _print_subtasks_recursive(self, subtasks):
+        for sub in subtasks:
+            print(sub)
+            self._print_subtasks_recursive(sub.subtasks)
+
+    # -------------------------
+    # Merge Sort Tasks
+    # -------------------------
+    def merge_sort_tasks(self, tasks, key):
+        if len(tasks) > 1:
+            mid = len(tasks) // 2
+            L = tasks[:mid]
+            R = tasks[mid:]
+
+            self.merge_sort_tasks(L, key)
+            self.merge_sort_tasks(R, key)
+
+            i = j = k = 0
+
+            while i < len(L) and j < len(R):
+                if getattr(L[i], key) < getattr(R[j], key):
+                    tasks[k] = L[i]
+                    i += 1
+                else:
+                    tasks[k] = R[j]
+                    j += 1
+                k += 1
+
+            while i < len(L):
+                tasks[k] = L[i]
+                i += 1
+                k += 1
+
+            while j < len(R):
+                tasks[k] = R[j]
+                j += 1
+                k += 1
+
+    def view_sorted_tasks(self, key):
+        sorted_tasks = self.tasks.copy()
+        self.merge_sort_tasks(sorted_tasks, key)
+        for task in sorted_tasks:
+            print(task)
+
