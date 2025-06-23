@@ -195,3 +195,51 @@ class TaskManager:
         for task in sorted_tasks:
             print(task)
 
+# -----------------------------
+# Run Example
+# -----------------------------
+if __name__ == "__main__":
+    tm = TaskManager()
+
+    while True:
+        print("\n--- Task Manager ---")
+        print("1. Add Task")
+        print("2. View ALL Tasks")
+        print("3. View Tasks by Category")
+        print("4. View Priority Tasks")
+        print("5. View Sorted Tasks (by Deadline)")
+        print("6. View Task Schedule")
+        print("7. Undo Last Action")
+        print("8. Redo Last Action")
+        print("9. Exit")
+
+        choice = input("Enter your choice (1–9): ")
+
+        if choice == '1':
+            name = input("Enter task name: ")
+            priority = int(input("Enter priority (lower is higher priority): "))
+            deadline = int(input("Enter deadline (as integer): "))
+            category = input("Enter category: ")
+            task = Task(name, priority, deadline, category)
+            tm.add_task(task)
+            print(f"Task '{name}' added successfully!")
+        elif choice == '2':
+            tm.view_all_tasks()
+        elif choice == '3':
+            cat = input("Enter category to filter: ")
+            tm.view_tasks_by_category(cat)
+        elif choice == '4':
+            tm.view_priority_tasks()
+        elif choice == '5':
+            tm.view_sorted_tasks('deadline')
+        elif choice == '6':
+            tm.view_schedule()
+        elif choice == '7':
+            tm.undo()
+        elif choice == '8':
+            tm.redo()
+        elif choice == '9':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice.")
